@@ -1,0 +1,58 @@
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      let sequence = []; // To track the sequence of keys pressed
+      let ctrlHeld = false; // To check if CTRL is being held down
+
+      const resultDiv = document.createElement('div');
+      document.body.appendChild(resultDiv);
+
+      // Dictionary of named sequences
+      const correctSequences = {
+        'Machine Gun': [...'saswd'],
+        'Eagle Strafing Run': [...'wdd'],
+        'Orbital Precision Strike': [...'ddw'],
+        'Reinforce': [...'wsdaw'],
+        'Supplies': [...'sswd']
+        // Add more named sequences as needed
+      };
+
+      // Select one random sequence name
+      const sequenceNames = Object.keys(correctSequences);
+      const randomSequenceName = sequenceNames[Math.floor(Math.random() * sequenceNames.length)];
+
+      resultDiv.innerText = "Your sequence is: " + randomSequenceName;
+
+      document.addEventListener('keydown', (event) => {
+        // Check if CTRL is pressed and update ctrlHeld
+        if (event.key === 'Control') {
+          ctrlHeld = true;
+        }
+
+        // Only add to the sequence if CTRL is held down
+        if (ctrlHeld && event.key !== 'Control') {
+          sequence.push(event.key); // Add the key to the sequence array
+        }
+      });
+
+      document.addEventListener('keyup', (event) => {
+        // When CTRL is released, check if the sequence was correct until this point
+        if (event.key === 'Control') {
+          ctrlHeld = false; // Reset CTRL held status
+
+          // Check only the randomly chosen sequence
+          let correctSequence = correctSequences[randomSequenceName];
+
+          let isCorrect = sequence.length > 0 && sequence.every((element, index) => element.toLowerCase() === correctSequence[index]);
+
+          // Only consider it successful if CTRL is still held down
+          if (isCorrect) {
+            resultDiv.innerText = randomSequenceName + ' Activated Successfully!';
+          } else {
+            resultDiv.innerText = 'Incorrect Sequence for ' + randomSequenceName + '. Try again.';
+          }
+
+          sequence = []; // Clear the sequence as the attempt is over
+        }
+      });
+    });
+  </script>
